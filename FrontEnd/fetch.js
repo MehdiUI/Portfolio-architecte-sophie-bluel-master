@@ -1,123 +1,113 @@
-// URL de l'API
-const apiUrl = 'http://localhost:5678/api/';
+// API Configuration
+const API_CONFIG = {
+  url: 'http://localhost:5678/api/',
+  key: 'qhKb/ItvcS74PyETTgOJag==TwyJrn1zrN66Fzyq'
+};
 
-// Votre clé d’API
-const apiKey = 'qhKb/ItvcS74PyETTgOJag==TwyJrn1zrN66Fzyq';
+const CATEGORY_NAMES = {
+  1: "Objets",
+  2: "Appartements",
+  3: "Hôtels & Restaurants"
+};
+
 
 async function fetchWorks() {
   try {
-    // Construire l'URL complète
-    const url = `${apiUrl}works`;
-
-    // Effectuer la requête avec la clé d’API
-    const response = await fetch(url, {
-      method: 'GET', // Méthode GET pour récupérer les données
+    const response = await fetch(`${API_CONFIG.url}works`, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json', // Format des données
-        // 'Authorization': `Bearer ${apiKey}`, <token>
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
-    // Convertir la réponse en JSON
-    const data = await response.json();
-
-    // Afficher les données dans la console
-    console.log('Données récupérées avec clé d’API :', data);
-    buildWorks(data)
-    buildFilters(data);
+    const works = await response.json();
+    console.log('Données récupérées:', works);
     
-    return data;
+    renderGallery(works);
+    return works;
   } catch (error) {
-    console.error('Erreur lors de la récupération des données :', error);
+    console.error('Erreur lors de la récupération des données:', error);
+    return [];
   }
 }
-// Appel de la fonction
-fetchWorks(); // 
 
 
-function buildWorks (works){
-    // Sélectionner le conteneur de la galerie
-    const galleryContainer = document.querySelector('.gallery');
+function renderGallery(works) {
+  const galleryContainer = document.querySelector('.gallery');
+
+  galleryContainer.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
   
-    // Réinitialiser la galerie pour éviter d'ajouter les projets en double
-    galleryContainer.innerHTML = '';
-  for (let i = 0; i < works.length; i++) { 
-    const work = works[i]
-    const workElement = document.createElement("figure");
-    workElement.dataset.id = works[i].id
-    const imageElement = document.createElement("img");
+  works.forEach(work => {
+    const workElement = document.createElement('figure');
+    workElement.dataset.id = work.id;
+    
+    const imageElement = document.createElement('img');
     imageElement.src = work.imageUrl;
-    const captionElement = document.createElement("figcaption");
-    captionElement.innerText = work.title
-    const galleryContainer=document.querySelector(".gallery")
-    galleryContainer.appendChild(workElement);
-    workElement.appendChild(imageElement);
-    workElement.appendChild(captionElement);
-  }
+    imageElement.alt = work.title;
+    
+    const captionElement = document.createElement('figcaption');
+    captionElement.textContent = work.title;
+    
+    workElement.append(imageElement, captionElement);
+    fragment.appendChild(workElement);
+  });
+  
+  galleryContainer.appendChild(fragment);
 }
 
-// Objet pour mapper les categoryId aux noms lisibles
-const categoryNames = {
-  1: "Objets",
-  2: "Appartements",
-  3: "Hôtels & Restaurants",
-};
-
-// Fonction pour créer les boutons dynamiquement
-function buildFilters(works) {
-  // Récupérer la section où insérer les boutons
+function createFilterButtons(works) {
   const portfolioSection = document.getElementById('portfolio');
-
-  // Créer ou récupérer le conteneur des filtres
+  
   let filterContainer = document.getElementById('filter-container');
   if (!filterContainer) {
-    filterContainer = document.createElement('ul'); // Utiliser une liste `<ul>`
+    filterContainer = document.createElement('ul');
     filterContainer.id = 'filter-container';
     portfolioSection.insertBefore(filterContainer, portfolioSection.querySelector('.gallery'));
-  } else {
-    filterContainer.innerHTML = ''; // Réinitialiser le contenu si nécessaire
   }
+  
+  filterContainer.innerHTML = '';
+  
 
-  // Ajouter un bouton "Tous"
-  const allButton = document.createElement('li');
-  allButton.classList.add('active'); // Par défaut, "Tous" est actif
-  allButton.innerText = 'Tous';
-  allButton.addEventListener('click', () => {
-    filterWorks(works, null); // Aucun filtre
-    setActiveButton(allButton); // Appliquer la classe active
-  });
-  filterContainer.appendChild(allButton);
-
-  // Extraire les catégories uniques des données
-  const categories = [...new Set(works.map(work => work.categoryId))];
-
-  // Créer un bouton pour chaque catégorie
-  categories.forEach(categoryId => {
-    const listItem = document.createElement('li');
-    // Utiliser le nom lisible pour la catégorie ou "Catégorie X" par défaut
-    listItem.innerText = categoryNames[categoryId] || `Catégorie ${categoryId}`;
-    listItem.addEventListener('click', () => {
-      filterWorks(works, categoryId); // Filtrer par catégorie
-      setActiveButton(listItem); // Appliquer la classe active
+  const createFilterButton = (label, filterFn, isActive = false) => {
+    const button = document.createElement('li');
+    button.textContent = label;
+    if (isActive) button.classList.add('active');
+    button.addEventListener('click', () => {
+      const filteredWorks = filterFn(works);
+      renderGallery(filteredWorks);
+      setActiveButton(button);
     });
-    filterContainer.appendChild(listItem);
+    
+    return button;
+  };
+
+  const allButton = createFilterButton('Tous', () => works, true);
+  filterContainer.appendChild(allButton);
+  const categories = [...new Set(works.map(work => work.categoryId))];
+  categories.forEach(categoryId => {
+    const categoryButton = createFilterButton(
+      CATEGORY_NAMES[categoryId] || `Catégorie ${categoryId}`,
+      works => works.filter(work => work.categoryId === categoryId)
+    );
+    filterContainer.appendChild(categoryButton);
   });
 }
 
-// Fonction pour appliquer le filtre
-function filterWorks(works, categoryId) {
-  // Filtrer les projets par `categoryId` ou tout afficher si `categoryId` est null
-  const filteredWorks = categoryId
-    ? works.filter(work => work.categoryId === categoryId)
-    : works;
-
-  // Mettre à jour l'affichage des projets filtrés
-  buildWorks(filteredWorks);
-}
-
-// Fonction pour gérer l'état actif des boutons
-function setActiveButton(activeListItem) {
+function setActiveButton(activeButton) {
   const buttons = document.querySelectorAll('#filter-container li');
-  buttons.forEach(button => button.classList.remove('active')); // Retirer la classe active de tous les boutons
-  activeListItem.classList.add('active'); // Appliquer la classe active au bouton cliqué
+  buttons.forEach(btn => btn.classList.remove('active'));
+  activeButton.classList.add('active');
 }
+
+function initGallery() {
+  fetchWorks()
+    .then(works => {
+      if (works.length > 0) {
+        createFilterButtons(works);
+      }
+    });
+}
+
+initGallery();
