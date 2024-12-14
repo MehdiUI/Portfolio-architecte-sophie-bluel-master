@@ -18,28 +18,29 @@ async function fetchWorks() {
       },
     });
 
-    // Vérifier si la réponse est correcte
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP : ${response.status}`);
-    }
-
     // Convertir la réponse en JSON
     const data = await response.json();
 
     // Afficher les données dans la console
     console.log('Données récupérées avec clé d’API :', data);
     buildWorks(data)
+    buildFilters(data);
+    
     return data;
   } catch (error) {
     console.error('Erreur lors de la récupération des données :', error);
   }
 }
-
 // Appel de la fonction
-fetchWorks(); // Remplacez 'data' par le chemin approprié de votre API
+fetchWorks(); // 
 
 
 function buildWorks (works){
+    // Sélectionner le conteneur de la galerie
+    const galleryContainer = document.querySelector('.gallery');
+  
+    // Réinitialiser la galerie pour éviter d'ajouter les projets en double
+    galleryContainer.innerHTML = '';
   for (let i = 0; i < works.length; i++) { 
     const work = works[i]
     const workElement = document.createElement("figure");
@@ -52,64 +53,71 @@ function buildWorks (works){
     galleryContainer.appendChild(workElement);
     workElement.appendChild(imageElement);
     workElement.appendChild(captionElement);
-
   }
 }
 
+// Objet pour mapper les categoryId aux noms lisibles
+const categoryNames = {
+  1: "Objets",
+  2: "Appartements",
+  3: "Hôtels & Restaurants",
+};
 
+// Fonction pour créer les boutons dynamiquement
+function buildFilters(works) {
+  // Récupérer la section où insérer les boutons
+  const portfolioSection = document.getElementById('portfolio');
 
-async function fetchData() {
-  try {
-    // Récupérer les projets et les catégories via l'API
-    const worksResponse = await fetch("http://localhost:5678/api/works");
-    const works = await worksResponse.json();
-
-    const categoriesResponse = await fetch("http://localhost:5678/api/categories");
-    const categories = await categoriesResponse.json();
-
-    // Construire les filtres
-    buildFilter(categories);
-
-    // Construire les projets
-    buildWorks(works);
-
-    // Configurer les filtres
-    setupFilters(works);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données :", error);
-  }
-}
-
-function setupFilters(works) {
-  const filterContainer = document.getElementById("filter-container");
-
+  // Créer ou récupérer le conteneur des filtres
+  let filterContainer = document.getElementById('filter-container');
   if (!filterContainer) {
-    console.error("Conteneur de filtres introuvable.");
-    return;
+    filterContainer = document.createElement('ul'); // Utiliser une liste `<ul>`
+    filterContainer.id = 'filter-container';
+    portfolioSection.insertBefore(filterContainer, portfolioSection.querySelector('.gallery'));
+  } else {
+    filterContainer.innerHTML = ''; // Réinitialiser le contenu si nécessaire
   }
 
-  // Ajouter un événement "click" à chaque bouton
-  filterContainer.addEventListener("click", (event) => {
-    const target = event.target;
+  // Ajouter un bouton "Tous"
+  const allButton = document.createElement('li');
+  allButton.classList.add('active'); // Par défaut, "Tous" est actif
+  allButton.innerText = 'Tous';
+  allButton.addEventListener('click', () => {
+    filterWorks(works, null); // Aucun filtre
+    setActiveButton(allButton); // Appliquer la classe active
+  });
+  filterContainer.appendChild(allButton);
 
-    if (target.tagName === "LI" && target.dataset.categoryId) {
-      const categoryId = target.dataset.categoryId;
+  // Extraire les catégories uniques des données
+  const categories = [...new Set(works.map(work => work.categoryId))];
 
-      // Vider la galerie avant de reconstruire les projets filtrés
-      const galleryContainer = document.querySelector(".gallery");
-      galleryContainer.innerHTML = "";
-
-      // Filtrer les projets en fonction de l'ID
-      const filteredWorks =
-        categoryId === "all"
-          ? works
-          : works.filter((work) => work.categoryId === parseInt(categoryId));
-
-      // Afficher les projets filtrés
-      buildWorks(filteredWorks);
-    }
+  // Créer un bouton pour chaque catégorie
+  categories.forEach(categoryId => {
+    const listItem = document.createElement('li');
+    // Utiliser le nom lisible pour la catégorie ou "Catégorie X" par défaut
+    listItem.innerText = categoryNames[categoryId] || `Catégorie ${categoryId}`;
+    listItem.addEventListener('click', () => {
+      filterWorks(works, categoryId); // Filtrer par catégorie
+      setActiveButton(listItem); // Appliquer la classe active
+    });
+    filterContainer.appendChild(listItem);
   });
 }
 
-// Lancer le processus
-fetchData();
+// Fonction pour appliquer le filtre
+function filterWorks(works, categoryId) {
+  // Filtrer les projets par `categoryId` ou tout afficher si `categoryId` est null
+  const filteredWorks = categoryId
+    ? works.filter(work => work.categoryId === categoryId)
+    : works;
+
+  // Mettre à jour l'affichage des projets filtrés
+  buildWorks(filteredWorks);
+}
+
+// Fonction pour gérer l'état actif des boutons
+function setActiveButton(activeListItem) {
+  const buttons = document.querySelectorAll('#filter-container li');
+  buttons.forEach(button => button.classList.remove('active')); // Retirer la classe active de tous les boutons
+  activeListItem.classList.add('active'); // Appliquer la classe active au bouton cliqué
+}

@@ -187,21 +187,48 @@ footer nav ul {
 }
 
 
-#filter-container li {
+#filter-container {
+	display: flex;
+	justify-content: center; /* Centre les boutons */
+	gap: 15px; /* Espace entre chaque bouton */
+	margin: 20px 0; /* Espacement avec les autres éléments */
+	list-style: none; /* Supprime les puces */
+	padding: 0;
+  }
+  
+  #filter-container li {
+	padding: 0; /* Supprime le padding interne du `<li>` */
+  }
+  
+  #filter-container li {
 	display: inline-block;
-	padding: 10px 20px;
-	margin: 5px;
+	text-align: center; /* Centrer le texte */
+  }
+  
+  #filter-container li {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 20px; /* Équilibre entre hauteur et largeur */
+	margin: 0;
 	border: 2px solid #2c6e49;
-	border-radius: 25px;
+	border-radius: 25px; /* Arrondi propre */
 	cursor: pointer;
 	background-color: transparent;
 	color: #2c6e49;
 	font-weight: bold;
+	font-family: 'Arial', sans-serif; /* Police propre */
+	font-size: 14px; /* Taille ajustée */
+	transition: all 0.3s ease; /* Animation fluide pour les interactions */
   }
   
   #filter-container li.active {
-	background-color: #2c6e49;
+	background-color: #2c6e49; /* Couleur de fond pour l'élément actif */
 	color: #ffffff;
-	border-color: #2c6e49;
+  }
+  
+  #filter-container li:hover {
+	background-color: #2c6e49; /* Effet hover */
+	color: #ffffff;
   }
   
