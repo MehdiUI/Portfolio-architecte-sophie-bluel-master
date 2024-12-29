@@ -22,6 +22,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+	background-color: #FFFEF8;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -232,3 +233,49 @@ footer nav ul {
 	color: #ffffff;
   }
   
+ 
+
+.login{
+	text-decoration: none;
+	color: black;
+  }
+  .contact{
+	text-decoration: none;
+	color: black;
+  }
+  .projets{
+	text-decoration: none;
+	color: black;
+  }
+
+#login {
+	width: 50%;
+margin: auto;
+}
+
+#login > * {
+	text-align: center;
+
+}
+#login h2{
+	margin-bottom: 20px;
+}
+#login form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#login input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+#login label {
+	margin: 2em 0 1em 0;
+}
+
+
+
