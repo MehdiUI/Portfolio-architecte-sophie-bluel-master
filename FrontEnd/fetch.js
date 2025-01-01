@@ -187,18 +187,26 @@ document.addEventListener('DOMContentLoaded', function() {
       const result = await loginUser(email, password);
 
       if (result.success) {
-          // Connexion réussie, rediriger ou afficher un message
-          console.log('Connexion réussie');
-          // Par exemple, rediriger vers une autre page :
-          // window.location.href = '/dashboard';
-      } else {
-          // Afficher le message d'erreur
-          console.error('Erreur de connexion:', result.message);
-          // Par exemple, afficher un message d'erreur dans la page :
-          // const errorMessage = document.getElementById('error-message');
-          // errorMessage.textContent = result.message;
-      }
+        // Connexion réussie, rediriger ou afficher un message
+        console.log('Connexion réussie');
+        localStorage.setItem('authToken', result.data.token); // Stocker le token
+        
+        window.location.href = '/FrontEnd/index.html'; // Rediriger vers la page d'accueil
+    } else {
+      alert("Email ou mot de passe incorrect. Veuillez réessayer.");
+      
+    
+    }
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  // Récupérer le token dans le localStorage
+  const authToken = localStorage.getItem('authToken');
 
+  if (authToken) {
+      console.log('Token récupéré depuis le localStorage :', authToken);
+  } else {
+      console.log('Aucun token trouvé dans le localStorage.');
+  }
+});
