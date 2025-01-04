@@ -278,7 +278,7 @@ margin: auto;
 	margin: 2em 0 1em 0;
 }
 
-.modal-wrapper {
+.portfolio-container {
 	display: flex;
 	align-items: center; /* Centre verticalement le bouton et le titre */
 	gap: 10px; /* Espace entre le titre et le bouton */
@@ -307,10 +307,22 @@ margin: auto;
 
 .modal{
 	position: fixed;
+	align-items: center;
+	justify-content: center;
+	display: flex;
 	top:0;
 	left:0;
 	width: 100%;
 	height: 100%;
 	background: rgba(0, 0, 0, 0.8);
+}
+
+.modal-wrapper{
+	overflow: auto;
+	width: 600px;
+	max-width: calc(100vw -20px);
+	max-height: calc(100vh -20px);
+	padding: 20px;
+	background-color: #ffffff;
 }
 

@@ -113,7 +113,7 @@ function createFilterButtons(works) {
         filterContainer.appendChild(categoryButton);
       });
     }
-    console.log('Les catégories récupérées:', categories);
+   
   });
 }
 
@@ -211,4 +211,127 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+async function fetchWorksPost() {
+  try {
+    console.log("Début de la fonction fetchWorksPost");
 
+    // Récupérer le token depuis localStorage
+    const token = localStorage.getItem('authToken');
+    console.log("Token récupéré :", token);
+
+    if (!token) {
+      throw new Error('Token introuvable dans localStorage. Veuillez vous connecter.');
+    }
+
+    // Récupération des éléments HTML
+    const fileInput = document.getElementById('fileInput');
+    const titleInput = document.getElementById('titleInput');
+    const categoryInput = document.getElementById('categoryInput');
+    console.log("Éléments HTML récupérés :", { fileInput, titleInput, categoryInput });
+
+    // Vérifiez que le fichier est sélectionné
+    if (!fileInput.files[0]) {
+      throw new Error('Aucun fichier sélectionné. Veuillez choisir une image.');
+    }
+
+    console.log("Fichier sélectionné :", fileInput.files[0]);
+
+    // Préparez le FormData
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]); // Fichier sélectionné
+    formData.append('title', titleInput.value || 'Titre Exemple'); // Remplacez par une valeur dynamique
+    formData.append('category', categoryInput.value || 1); // Remplacez par l'ID de catégorie
+
+    // Vérifiez le contenu de FormData
+    for (let [key, value] of formData.entries()) {
+      console.log(`FormData - ${key}:`, value);
+    }
+
+    // Requête POST
+    console.log("Envoi de la requête fetch...");
+    const response = await fetch(`${API_CONFIG.url}works`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`, // Token d'autorisation
+      },
+      body: formData, // Envoi des données en multipart/form-data
+    });
+
+    console.log("Réponse reçue :", response);
+
+    // Traitement de la réponse
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Données envoyées avec succès:', data);
+      return data;
+    } else {
+      const errorData = await response.text();
+      console.error('Erreur renvoyée par le serveur :', errorData);
+      throw new Error(`Erreur HTTP ${response.status} : ${errorData}`);
+    }
+  } catch (error) {
+    console.error('Erreur lors de la requête POST:', error);
+  }
+}
+
+
+
+
+
+
+
+let modal = null
+
+const focusableSelector ='button, a, input, textarea'
+
+let focusables=[]
+
+
+const openModal = function (e) {
+  e.preventDefault() 
+  const target = document.querySelector(e.target.getAttribute('href'))
+ 
+  target.style.display = null
+  target.removeAttribute('aria-hidden')
+  target.setAttribute('aria-modal','true')
+  modal = target
+  modal.addEventListener('click', closeModal)
+  modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
+  modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
+}
+
+const closeModal = function (e){
+  if (modal === null) return
+  e.preventDefault() 
+modal.style.display = "none" // focusables = Array.from(modal.querySelectorAll(focusableSelector))
+modal.setAttribute('aria-hidden', 'true')
+modal.removeAttribute('aria-modal')
+modal.removeEventListener('click', closeModal)
+modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
+modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
+modal = null
+}
+
+const stopPropagation = function (e) {
+  e.stopPropagation()
+}
+
+const focusInModal = function (e) {
+  e.preventDefault()
+}
+
+document.querySelectorAll('.js-modal').forEach(a => {
+  a.addEventListener('click', openModal)
+ 
+})
+
+window.addEventListener('keydown', function (e) {
+
+  if(e.key  ==="Escape"  || e.key === "Esc"){closeModal(e)
+
+  } 
+
+  if (e.key ==='Tab' && modal !== null) {
+    focusInModal(e)
+  }
+})
