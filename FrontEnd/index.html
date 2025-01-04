@@ -7,6 +7,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 	<meta name="description" content="">
 	<script type="module" src="fetch.js"></script>
 	<link rel="stylesheet" href="./assets/style.css">
@@ -25,6 +26,7 @@
 	</nav>
 </header>
 <main>
+
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
@@ -37,7 +39,20 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+
+		
+		<aside id="modal1" aria-hidden="true" role="dialog" aria-labelledby="titlemodal"> </aside>
+
+
+		<div class="modal-wrapper">
+			<h2 id="titlemodal">Mes Projets</h2>
+			<a id="icona" href="#modal1"><i class="fas fa-pencil-alt"></i>
+				Modifier</a>
+		</div>
+		
+	
+		
+
 		<div class="gallery">
 			
 			<!-- <figure>

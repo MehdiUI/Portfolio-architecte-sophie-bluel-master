@@ -210,3 +210,5 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('Aucun token trouvé dans le localStorage.');
   }
 });
+
+

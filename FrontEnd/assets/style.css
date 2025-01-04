@@ -124,7 +124,7 @@ li:hover {
 }
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+	
 }
 .gallery {
 	width: 100%;
@@ -273,9 +273,44 @@ margin: auto;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
 #login label {
 	margin: 2em 0 1em 0;
 }
 
+.modal-wrapper {
+	display: flex;
+	align-items: center; /* Centre verticalement le bouton et le titre */
+	gap: 10px; /* Espace entre le titre et le bouton */
+	justify-content: center;
+	margin-bottom: 2em;
+	text-decoration: none;
+}
 
+#icona {
+	text-decoration: none;
+	color: black;
+	display: flex;
+	align-items: center; /* Centre l'icône et le texte verticalement */
+	justify-content: center; /* Centre horizontalement */
+	gap: 8px; /* Espace entre l'icône et le texte */
+	font-size: 14px; /* Taille de la police */
+	background-color: transparent; /* Fond transparent */
+	border: 0px solid #2E7464; /* Bordure verte */
+	border-radius: 5px; /* Bordures arrondies */
+	cursor: pointer; /* Indicateur interactif */
+}
+  
+#icona,  i {
+	font-size: 16px; /* Taille de l'icône */
+}
+
+.modal{
+	position: fixed;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.8);
+}
 
