@@ -57,8 +57,9 @@ body {
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px   ;
 }
+
 section {
 	margin: 50px 0
 }
@@ -323,6 +324,36 @@ margin: auto;
 	max-width: calc(100vw -20px);
 	max-height: calc(100vh -20px);
 	padding: 20px;
-	background-color: #ffffff;
+	background-color: #FFFEF8;
 }
 
+/* Barre noire masquée */
+#admin-bar {
+	display: none;
+	background-color: black;
+	color: white;
+	padding: 10px;
+	text-align: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	font-size: 16px;
+	height: 60px;
+	margin-bottom: 30px;
+	gap: 10px;
+  }
+
+  #admin-bar i{
+	font-size: 16px;
+	background-color: black;
+	
+  }
+  
+  /* Barre noire visible */
+  #admin-bar.visible {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+  

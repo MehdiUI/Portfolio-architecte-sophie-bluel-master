@@ -211,73 +211,94 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const loginLink = document.querySelector('a.login'); // Sélectionne le lien avec la classe "login"
+  const adminBar = document.getElementById('admin-bar'); // Sélectionne la barre noire
+
+  if (!loginLink) {
+    console.error('Aucun lien avec la classe "login" trouvé.');
+    return;
+  }
+
+  // Vérifie si le token est présent dans le localStorage
+  const authToken = localStorage.getItem('authToken');
+
+  if (authToken) {
+    // Si connecté, change le texte en "logout"
+    loginLink.textContent = 'Logout';
+    loginLink.href = '#'; // Désactive le lien vers la page de connexion
+
+    // Ajouter la classe CSS pour afficher la barre noire
+    adminBar.classList.add('visible');
+
+    // Ajouter un événement pour gérer la déconnexion
+    loginLink.addEventListener('click', function (event) {
+      event.preventDefault(); // Empêche l'action par défaut
+      localStorage.removeItem('authToken'); // Supprime le token du localStorage
+      console.log('Utilisateur déconnecté');
+
+      // Retirer la classe CSS pour masquer la barre noire
+      adminBar.classList.remove('visible');
+      
+      window.location.reload(); // Recharge la page pour refléter l'état de déconnexion
+    });
+  } else {
+    // Si non connecté, s'assure que le texte reste "login"
+    loginLink.textContent = 'Login';
+    loginLink.href = 'login.html'; // Lien vers la page de connexion
+
+    // Retirer la classe CSS pour masquer la barre noire
+    adminBar.classList.remove('visible');
+  }
+});
+
+
+
+
+
+
+
+
+
 async function fetchWorksPost() {
   try {
-    console.log("Début de la fonction fetchWorksPost");
+    // Préparez les données à envoyer (exemple)
+    const formData = new FormData();
+    formData.append('title', 'Titre Exemple'); // Exemple de titre
+    formData.append('category', 1); // Exemple de catégorie
+    formData.append('image', new Blob(['fake image data'], { type: 'image/png' })); // Exemple de fichier
 
     // Récupérer le token depuis localStorage
     const token = localStorage.getItem('authToken');
-    console.log("Token récupéré :", token);
-
     if (!token) {
       throw new Error('Token introuvable dans localStorage. Veuillez vous connecter.');
     }
 
-    // Récupération des éléments HTML
-    const fileInput = document.getElementById('fileInput');
-    const titleInput = document.getElementById('titleInput');
-    const categoryInput = document.getElementById('categoryInput');
-    console.log("Éléments HTML récupérés :", { fileInput, titleInput, categoryInput });
-
-    // Vérifiez que le fichier est sélectionné
-    if (!fileInput.files[0]) {
-      throw new Error('Aucun fichier sélectionné. Veuillez choisir une image.');
-    }
-
-    console.log("Fichier sélectionné :", fileInput.files[0]);
-
-    // Préparez le FormData
-    const formData = new FormData();
-    formData.append('image', fileInput.files[0]); // Fichier sélectionné
-    formData.append('title', titleInput.value || 'Titre Exemple'); // Remplacez par une valeur dynamique
-    formData.append('category', categoryInput.value || 1); // Remplacez par l'ID de catégorie
-
-    // Vérifiez le contenu de FormData
-    for (let [key, value] of formData.entries()) {
-      console.log(`FormData - ${key}:`, value);
-    }
-
-    // Requête POST
-    console.log("Envoi de la requête fetch...");
+    // Effectuez la requête POST
     const response = await fetch(`${API_CONFIG.url}works`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`, // Token d'autorisation
+        Authorization: `Bearer ${token}`, // Ajoutez le token pour l'autorisation
       },
-      body: formData, // Envoi des données en multipart/form-data
+      body: FormData, // Données envoyées sous forme de FormData
     });
 
-    console.log("Réponse reçue :", response);
-
-    // Traitement de la réponse
+    // Vérifiez la réponse
     if (response.ok) {
       const data = await response.json();
-      console.log('Données envoyées avec succès:', data);
+      console.log('Données envoyées et reçues avec succès:', data); // Loguer les données reçues
       return data;
     } else {
-      const errorData = await response.text();
-      console.error('Erreur renvoyée par le serveur :', errorData);
-      throw new Error(`Erreur HTTP ${response.status} : ${errorData}`);
+      const errorText = await response.text();
+      console.error(`Erreur HTTP ${response.status}:`, errorText);
     }
   } catch (error) {
     console.error('Erreur lors de la requête POST:', error);
   }
 }
-
-
-
-
-
 
 
 let modal = null
@@ -335,3 +356,5 @@ window.addEventListener('keydown', function (e) {
     focusInModal(e)
   }
 })
+
+ 
