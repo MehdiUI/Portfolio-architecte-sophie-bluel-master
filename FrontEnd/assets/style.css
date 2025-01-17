@@ -251,16 +251,18 @@ footer nav ul {
 
 #login {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
 
 #login > * {
 	text-align: center;
 
 }
+
 #login h2{
 	margin-bottom: 20px;
 }
+
 #login form {
 	text-align: left;
 	margin-top:30px;
@@ -327,33 +329,97 @@ margin: auto;
 	background-color: #FFFEF8;
 }
 
-/* Barre noire masquée */
+
+
+#admin-bar i{
+	font-size: 16px;
+	background-color: black;
+	
+}
+  
+
 #admin-bar {
 	display: none;
 	background-color: black;
 	color: white;
 	padding: 10px;
 	text-align: center;
-	position: fixed;
+	position: fixed; /* Fixe la barre en haut de la page */
 	top: 0;
 	left: 0;
 	width: 100%;
 	font-size: 16px;
 	height: 60px;
-	margin-bottom: 30px;
-	gap: 10px;
-  }
-
-  #admin-bar i{
-	font-size: 16px;
-	background-color: black;
-	
-  }
+	z-index: 1000;
+}
   
-  /* Barre noire visible */
-  #admin-bar.visible {
+  
+#admin-bar.visible {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-  }
+	gap:15PX;
+}
   
+
+body.user-logged-in header {
+	margin-top: 10%; /* Ajoute un espace sous la barre noire uniquement si connecté */
+}
+  
+
+.gallery-modal {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding: 20px;
+	
+}
+  
+.modal-image {
+	max-width: 100px;
+	min-height: 100PX;
+	transition: transform 0.3s ease;
+	cursor: pointer;
+}
+  
+.modal-image:hover {
+ transform: scale(1.05); /* Zoom au survol */
+}
+  
+
+  
+.gallery-item {
+	position: relative; /* Position relative pour contenir l'icône */
+	min-height: 100PX;
+	max-width: 100px;
+
+}
+  
+  
+.modal-image:hover {
+	transform: scale(1.05); /* Zoom au survol */
+}
+  
+.delete-icon {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 18px;
+	color: white;
+	background-color: rgba(0, 0, 0, 1); /* Fond semi-transparent */
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: transform 0.3s ease, background-color 0.3s ease;
+}
+  
+.delete-icon:hover {
+	transform: scale(1.2); /* Agrandissement au survol */
+	background-color: rgba(255, 0, 0, 0.8); /* Fond rouge au survol */
+}
+
+#titlemodal{
+	color: black;
+	font-family: 'Work Sans' ;
+	font-size: 26px;
+  }
