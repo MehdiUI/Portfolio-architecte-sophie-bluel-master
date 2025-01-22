@@ -317,20 +317,24 @@ window.addEventListener('keydown', function (e) {
 });
 
 function renderGalleryInModal(works) {
-  const modalWrapper = document.querySelector('.modal-wrapper');
+  const modalWrapper = document.querySelector('.modal-wrapper.js-modal-stop');
 
   if (!modalWrapper) {
+    console.error('Le conteneur modal-wrapper.js-modal-stop est introuvable.');
     return;
   }
 
+  // Supprimez l'ancienne galerie si elle existe
   const existingGallery = modalWrapper.querySelector('.gallery-modal');
   if (existingGallery) {
     existingGallery.remove();
   }
 
+  // Créez un conteneur pour la galerie
   const galleryContainer = document.createElement('div');
   galleryContainer.classList.add('gallery-modal');
 
+  // Ajoutez les images à la galerie
   works.forEach((work) => {
     const workElement = document.createElement('div');
     workElement.classList.add('gallery-item');
@@ -345,13 +349,10 @@ function renderGalleryInModal(works) {
     iconElement.classList.add('fa-solid', 'fa-trash-can', 'delete-icon');
     iconElement.title = 'Supprimer';
 
-    iconElement.addEventListener('click', function (event) {
-      event.stopPropagation();
+    // Ajoutez l'événement pour supprimer une image
+    iconElement.addEventListener('click', function () {
       workElement.remove();
-      const mainGalleryItem = document.querySelector(`.gallery figure[data-id="${work.id}"]`);
-      if (mainGalleryItem) {
-        mainGalleryItem.remove();
-      }
+      console.log(`Image supprimée : ${work.id}`);
     });
 
     workElement.appendChild(imageElement);
@@ -359,8 +360,25 @@ function renderGalleryInModal(works) {
     galleryContainer.appendChild(workElement);
   });
 
+  // Ajoutez un séparateur
+  const separator = document.createElement('hr');
+  separator.classList.add('modal-separator');
+
+  // Créez le bouton "Ajouter une photo"
+  const addButton = document.createElement('button');
+  addButton.textContent = 'Ajouter une photo';
+  addButton.classList.add('add-photo-button');
+  addButton.addEventListener('click', () => {
+    console.log('Bouton Ajouter une photo cliqué');
+    // Ajoutez ici la logique pour ouvrir une modal ou un formulaire pour ajouter une photo
+  });
+
+  // Ajoutez tout au conteneur de la modale
   modalWrapper.appendChild(galleryContainer);
+  modalWrapper.appendChild(separator);
+  modalWrapper.appendChild(addButton);
 }
+
 
 async function fetchAndRenderGalleryInModal() {
   try {
