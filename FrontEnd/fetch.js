@@ -325,13 +325,13 @@ function renderGalleryInModal(works) {
   }
 
   // Supprimez l'ancienne galerie si elle existe
-  const existingGallery = modalWrapper.querySelector('.gallery-modal');
-  if (existingGallery) {
-    existingGallery.remove();
+  let galleryContainer = modalWrapper.querySelector('.gallery-modal');
+  if (galleryContainer) {
+    galleryContainer.remove();
   }
 
-  // Créez un conteneur pour la galerie
-  const galleryContainer = document.createElement('div');
+  // Créez un nouveau conteneur pour la galerie
+  galleryContainer = document.createElement('div');
   galleryContainer.classList.add('gallery-modal');
 
   // Ajoutez les images à la galerie
@@ -342,7 +342,6 @@ function renderGalleryInModal(works) {
 
     const imageElement = document.createElement('img');
     imageElement.src = work.imageUrl;
-    imageElement.alt = work.title;
     imageElement.classList.add('modal-image');
 
     const iconElement = document.createElement('i');
@@ -360,44 +359,106 @@ function renderGalleryInModal(works) {
     galleryContainer.appendChild(workElement);
   });
 
-  // Ajoutez un séparateur
-  const separator = document.createElement('hr');
-  separator.classList.add('modal-separator');
-
-  // Créez le bouton "Ajouter une photo"
-  const addButton = document.createElement('button');
-  addButton.textContent = 'Ajouter une photo';
-  addButton.classList.add('add-photo-button');
-  addButton.addEventListener('click', () => {
-    console.log('Bouton Ajouter une photo cliqué');
-    // Ajoutez ici la logique pour ouvrir une modal ou un formulaire pour ajouter une photo
-  });
-
-  // Ajoutez tout au conteneur de la modale
+  // Ajoutez la galerie dans la modale
   modalWrapper.appendChild(galleryContainer);
+
+  // Ajoutez un séparateur sous la galerie (s'il n'existe pas déjà)
+  let separator = modalWrapper.querySelector('.modal-separator');
+  if (!separator) {
+    separator = document.createElement('hr');
+    separator.classList.add('modal-separator');
+    modalWrapper.appendChild(separator);
+  }
+
+  // Créez ou réutilisez la div "bouton-envoie" en la plaçant **après** la galerie
+  let buttonContainer = modalWrapper.querySelector('.bouton-envoie');
+  if (!buttonContainer) {
+    buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('bouton-envoie');
+
+    // Créez le bouton "Ajouter une photo"
+    const addButton = document.createElement('button');
+    addButton.textContent = 'Ajouter une photo';
+    addButton.classList.add('add-photo-button');
+
+    // Ajoutez un écouteur d'événement au bouton
+    addButton.addEventListener('click', () => {
+      console.log('Bouton Ajouter une photo cliqué');
+
+      // Basculer l'affichage entre la galerie et le formulaire
+      toggleAddPhotoForm(true); // Affiche le formulaire
+    });
+
+    // Ajoutez le bouton dans la div "bouton-envoie"
+    buttonContainer.appendChild(addButton);
+  }
+
+  // Placez toujours le bouton et le séparateur après la galerie
   modalWrapper.appendChild(separator);
-  modalWrapper.appendChild(addButton);
+  modalWrapper.appendChild(buttonContainer);
+}
+
+// Fonction pour gérer l'état du formulaire
+function toggleAddPhotoForm(showForm) {
+  const galleryContainer = document.querySelector('.gallery-modal'); // Galerie
+  const formContainer = document.querySelector('.add-photo-form'); // Formulaire
+  const addButton = document.querySelector('.add-photo-button'); // Bouton principal
+
+  if (!galleryContainer || !formContainer || !addButton) {
+    console.error('Élément(s) manquant(s) : impossible de basculer entre la galerie et le formulaire.');
+    return;
+  }
+
+  if (showForm) {
+    galleryContainer.style.display = 'none'; // Masquer la galerie
+    formContainer.style.display = 'block'; // Afficher le formulaire
+    addButton.textContent = 'Valider'; // Changer texte bouton
+  } else {
+    galleryContainer.style.display = 'block'; // Afficher la galerie
+    formContainer.style.display = 'none'; // Masquer le formulaire
+    addButton.textContent = 'Ajouter une photo'; // Texte par défaut
+  }
 }
 
 
+function createBackButton() {
+  const modalWrapper = document.querySelector('.modal-wrapper.js-modal-stop');
+  if (!modalWrapper) {
+    console.error('Le conteneur modal-wrapper.js-modal-stop est introuvable.');
+    return;
+  }
+
+  let backButton = modalWrapper.querySelector('.back-button');
+  if (!backButton) {
+    backButton = document.createElement('button');
+    backButton.classList.add('back-button');
+    backButton.style.display = 'none'; // Masqué par défaut
+    backButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Retour';
+    backButton.addEventListener('click', () => toggleAddPhotoForm(false));
+    modalWrapper.prepend(backButton); // Ajouter en haut
+  }
+}
+
 async function fetchAndRenderGalleryInModal() {
   try {
-    const response = await fetch(`${API_CONFIG.url}works`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
+    const response = await fetch(`${API_CONFIG.url}works`);
     const works = await response.json();
+
+    console.log('Données récupérées :', works);
+
+    // Exemple simplifié pour afficher la galerie
     renderGalleryInModal(works);
+    createBackButton(); // Créer bouton retour
   } catch (error) {
     console.error('Erreur lors de la récupération des données :', error);
   }
 }
 
+
+// Initialiser la galerie modale
 fetchAndRenderGalleryInModal();
 
+// Gestion des états connectés/déconnectés
 document.addEventListener('DOMContentLoaded', function () {
   const authToken = localStorage.getItem('authToken');
   const body = document.body;
@@ -408,3 +469,54 @@ document.addEventListener('DOMContentLoaded', function () {
     body.classList.remove('user-logged-in'); // Retire la classe si déconnecté
   }
 });
+
+// Ajoutez un séparateur
+const separator = document.createElement('hr');
+separator.classList.add('modal-separator');
+
+// Créez la div "bouton-envoie"
+const buttonContainer = document.createElement('div');
+buttonContainer.classList.add('bouton-envoie');
+
+// Créez un nouveau bouton "Ajouter une photo"
+const addButton = document.createElement('button');
+addButton.textContent = 'Ajouter une photo'; // Texte par défaut
+addButton.classList.add('add-photo-button'); // Classe pour le bouton
+
+// Ajoutez un écouteur d'événement au bouton
+addButton.addEventListener('click', () => {
+  console.log('Bouton Ajouter une photo cliqué');
+
+  // Basculer l'affichage entre la galerie et le formulaire
+  const galleryContainer = document.querySelector('.gallery-modal');
+  const formContainer = document.querySelector('.add-photo-form');
+
+  if (galleryContainer && formContainer) {
+    if (galleryContainer.style.display === 'none') {
+      // Si la galerie est masquée, l'afficher et masquer le formulaire
+      galleryContainer.style.display = 'flex';
+      formContainer.style.display = 'none';
+      addButton.textContent = 'Ajouter une photo'; // Rétablir le texte par défaut
+    } else {
+      // Sinon, masquer la galerie et afficher le formulaire
+      galleryContainer.style.display = 'none';
+      formContainer.style.display = 'flex';
+      addButton.textContent = 'Valider'; // Changer le texte en "Valider"
+    }
+  } else {
+    console.error('Impossible de trouver le conteneur de la galerie ou le formulaire.');
+  }
+});
+
+// Ajoutez le bouton dans la div "bouton-envoie"
+buttonContainer.appendChild(addButton);
+
+// Ajoutez les éléments au conteneur principal (modale)
+const modalWrapper = document.querySelector('.modal-wrapper.js-modal-stop');
+
+if (modalWrapper) {
+  modalWrapper.appendChild(separator); // Ajoutez le séparateur
+  modalWrapper.appendChild(buttonContainer); // Ajoutez la div contenant le bouton
+} else {
+  console.error('Impossible de trouver le modalWrapper.');
+}

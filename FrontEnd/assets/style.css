@@ -422,4 +422,111 @@ body.user-logged-in header {
 	color: black;
 	font-family: 'Work Sans' ;
 	font-size: 26px;
+	font-weight: 400;
+	margin-top: 30px;
+}
+
+.bouton-envoie{
+	text-align: center;
+}
+.add-photo-button {
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	margin-top: 2em; /* Ajoutez un espace au-dessus */
+	width: 250px;
+	font-size: 14px;
+	text-align: center;
+	border-radius: 60px;
+	padding: 20px 20px;
+	border: none;
+	display: inline-block; /* Nécessaire pour centrer dans un conteneur avec text-align */
+	cursor: pointer;
+}
+  
+.add-photo-button:hover {
+	background-color: #144d3c;
+}
+  
+.modal-header {
+	position: relative; /* Nécessaire pour positionner l'icône à droite */
+	display: flex;
+	align-items: center;
+	justify-content: center; /* Centre le titre horizontalement */
+	margin-bottom: 20px;
+  }
+  
+  .modal-header .js-modal-close {
+	position: absolute; /* Permet de positionner l'icône par rapport au parent */
+	top: 0;
+	right: 0;
+	background: none; /* Supprime le fond */
+	border: none; /* Supprime les bordures */
+	font-size: 24px; /* Taille de l'icône */
+	color: #000; /* Couleur par défaut */
+	cursor: pointer;
+	padding: 10px; /* Ajoute un peu d'espace autour de l'icône */
+	line-height: 1; /* Assure un bon alignement */
+  }
+  
+  .modal-header .js-modal-close i {
+	font-size: 24px; /* Taille de l'icône Font Awesome */
+  }
+  
+  .modal-header .js-modal-close:hover {
+	color: #ff0000; /* Change la couleur de l'icône au survol */
+  }
+  
+  .form-group {
+	margin-bottom: 20px;
+  }
+  
+  .upload-label {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #e0e7ef;
+	color: #3f4757;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 10px;
+	border: 1px solid #c0c7cf;
+  }
+  
+  .upload-label:hover {
+	background-color: #d0d7df;
+  }
+  
+  .form-group input,
+  .form-group select {
+	width: 100%;
+	padding: 10px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+  }
+  
+  .form-actions {
+	text-align: center;
+  }
+  
+  .validate-button {
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	background-color: #6c757d;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+  }
+  
+  .validate-button:hover {
+	background-color: #5a6268;
+  }
+
+  .add-photo-form{
+
+	justify-content: center;
   }

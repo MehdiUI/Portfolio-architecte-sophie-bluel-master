@@ -50,17 +50,55 @@
 				Modifier</a>
 		</div>
 		<aside class="modal" id="modal1" aria-hidden="true" role="dialog" aria-labelledby="titlemodal" style="display: none;">
-			
 			<div class="modal-wrapper js-modal-stop">
-			<h2 id="titlemodal">Galerie photo</h2>
-			<input type="submit" value="Envoyer">
-			<button class="js-modal-close">X</button>
+			  <!-- En-tête de la modale -->
+			  <div class="modal-header">
+				<h2 id="titlemodal">Galerie photo</h2>
+				<button class="js-modal-close">
+				  <i class="fa-solid fa-xmark"></i>
+				</button>
+			  </div>
+		  
+			  <!-- Conteneur de la galerie -->
+			  <div class="gallery-modal">
+				<!-- Galerie dynamique insérée par JavaScript -->
+			  </div>
+		  
+			  <!-- Formulaire pour ajouter une photo (caché par défaut) -->
+			  <div class="add-photo-form" style="display: none;">
 			
-			
-		</div> </aside>
-	
+				<form id="photoForm">
+				  <!-- Champ pour ajouter une image -->
+				  <div class="form-group">
+					<label for="imageUpload" class="upload-label">
+					  <i class="fa-solid fa-image"></i> + Ajouter photo
+					</label>
+					<input type="file" id="imageUpload" accept="image/png, image/jpeg" style="display: none;" />
+					<p>jpg, png : 4mo max</p>
+				  </div>
+		  
+				  <!-- Champ pour le titre -->
+				  <div class="form-group">
+					<label for="photoTitle">Titre</label>
+					<input type="text" id="photoTitle" placeholder="Titre" required />
+				  </div>
+		  
+				  <!-- Champ pour la catégorie -->
+				  <div class="form-group">
+					<label for="photoCategory">Catégorie</label>
+					<select id="photoCategory" required>
+					  <option value="" disabled selected>Choisissez une catégorie</option>
+					  <option value="1">Catégorie 1</option>
+					  <option value="2">Catégorie 2</option>
+					</select>
+				  </div>
+		  
+				  
+				</form>
+			  </div>
+			</div>
+		  </aside>
 		
-
 		<div class="gallery">
 			
 			<!-- <figure>
